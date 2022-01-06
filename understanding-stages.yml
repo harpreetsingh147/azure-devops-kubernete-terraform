@@ -9,33 +9,24 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-stages:
-  - stage: Build
-    jobs:
-      - job: buildjob1
-        steps:
-          - bash: echo build job1
-      - job: buildjob2
-        steps:
-          - bash: echo build job2
-  - stage: DevDeploy
-    dependsOn: Build
-    jobs:
-      - job: devjob1
-        steps:
-          - bash: echo dev job1
-  - stage: QADeploy
-    dependsOn: Build
-    jobs:
-      - job: qajob1
-        steps:
-          - bash: echo qa job1
-  - stage: ProdDeploy
-    dependsOn:
-    - DevDeploy
-    - QADeploy
-    jobs:
-      - job: prodjob1
-        steps:
-          - bash: echo prod job1
+jobs:
+- job: "job1"
+  steps:
+   - script: |
+      echo Default working directory
+      echo $(System.DefaultWorkingDirectory)
+      echo Artifact staging directory
+      echo $(build.ArtifactStagingDirectory)
+      echo my first job message 2
+     displayName: 'my first job'
+   
 
+# steps:
+# - script: echo Hello, world!
+#   displayName: 'Run a one-line script'
+
+# - script: |
+#     echo Add other tasks to build, test, and deploy your project.
+#     echo See https://aka.ms/yaml
+#     echo more scripts
+#   displayName: 'Run a multi-line script'
