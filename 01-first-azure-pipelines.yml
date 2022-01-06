@@ -13,14 +13,12 @@ jobs:
 - job: "job1"
   steps:
    - script: |
-      echo my first job
+      echo Default working directory
+      echo $(System.DefaultWorkingDirectory)
+      echo Artifact staging directory
+      echo $(build.ArtifactStagingDirectory)
       echo my first job message 2
      displayName: 'my first job'
-- job: "job2"
-  steps:
-    - script: echo my second job
-      displayName: 'my second job'
-  dependsOn: job1
    
 
 # steps:
