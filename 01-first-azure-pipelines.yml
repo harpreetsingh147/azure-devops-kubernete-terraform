@@ -20,6 +20,7 @@ jobs:
   steps:
     - script: echo my second job
       displayName: 'my second job'
+  dependsOn: job1
    
 
 # steps:
