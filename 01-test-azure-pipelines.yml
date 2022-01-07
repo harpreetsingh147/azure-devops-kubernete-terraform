@@ -30,23 +30,3 @@ stages:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'manifests'
           publishLocation: 'Container'
-        
-  - stage: DevDeploy
-    dependsOn: Build
-    jobs:
-      - job: DevJob1
-        steps:
-          - bash: echo dev job1
-  - stage: QADeploy
-    dependsOn: Build
-    jobs:
-      - job: QAJob1
-        steps:
-          - bash: echo QA job1 update
-  - stage: StagingDeploy
-    dependsOn: Build
-    jobs:
-      - job: StagingJob1
-        steps:
-          - bash: echo Staging job1
-  
