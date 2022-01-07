@@ -21,16 +21,19 @@ stages:
           - bash: echo Default Working Directory= $(System.DefaultWorkingDirectory)
       - job: BuildAndDeployContainer
         displayName: Build and deploy container
+        dependsOn: PrintBuildInVariables
         steps:
           - bash: echo Build container
           - bash: echo Deploy container to hub.docker.com
       - job: UpdateKuberneteCluster
         displayName: Update kubernete cluster
+        dependsOn: BuildAndDeployContainer
         steps:
           - bash: echo create image pull secret
           - bash: echo update azure kubernete cluster
       - job: CopyArtifacts
         displayName: Copy artifacts from default working directory
+        dependsOn: UpdateKuberneteCluster
         steps:
           - task: CopyFiles@2
             inputs:
@@ -39,9 +42,37 @@ stages:
               TargetFolder: '$(Build.ArtifactStagingDirectory)'
       - job: PublishArtifacts
         displayName: Publish build artifacts to azure staging directory
+        dependsOn: CopyArtifacts
         steps:
         - task: PublishBuildArtifacts@1
           inputs:
             PathtoPublish: '$(Build.ArtifactStagingDirectory)'
             ArtifactName: 'drop'
             publishLocation: 'Container'
+  - stage: DevDeploy
+    dependsOn: Build
+    jobs:
+      - job: DevJob1
+        steps:
+          - bash: echo dev job1
+  - stage: QADeploy
+    dependsOn: Build
+    jobs:
+      - job: QAJob1
+        steps:
+          - bash: echo QA job1
+  - stage: StagingDeploy
+    dependsOn: Build
+    jobs:
+      - job: StagingJob1
+        steps:
+          - bash: echo Staging job1
+  - stage: ProdDeploy
+    dependsOn:
+     - DevDeploy
+     - QADeploy
+     - StagingDeploy
+    jobs:
+      - job: ProdJob1
+        steps:
+          - bash: echo Prod job1
