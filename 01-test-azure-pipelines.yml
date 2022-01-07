@@ -73,6 +73,11 @@ stages:
      - QADeploy
      - StagingDeploy
     jobs:
-      - job: ProdJob1
-        steps:
-          - bash: echo Prod job1
+      - deployment: "Production Deployment"
+        environment: Prod
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - bash: Deploy on production environment
+  
