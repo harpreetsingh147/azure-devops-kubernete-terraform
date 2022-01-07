@@ -42,7 +42,7 @@ stages:
     jobs:
       - job: QAJob1
         steps:
-          - bash: echo QA job1
+          - bash: echo QA job1 update
   - stage: StagingDeploy
     dependsOn: Build
     jobs:
