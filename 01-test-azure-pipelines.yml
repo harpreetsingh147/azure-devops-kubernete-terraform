@@ -15,40 +15,22 @@ stages:
     variables:
       env: Build
     jobs:
-      - job: PrintBuildInVariables
-        displayName: Print build in variables
-        steps:
-          - bash: echo Default Working Directory= $(System.DefaultWorkingDirectory)
-      - job: BuildAndDeployContainer
-        displayName: Build and deploy container
-        dependsOn: PrintBuildInVariables
-        steps:
-          - bash: echo Build container
-          - bash: echo Deploy container to hub.docker.com
-      - job: UpdateKuberneteCluster
-        displayName: Update kubernete cluster
-        dependsOn: BuildAndDeployContainer
-        steps:
-          - bash: echo create image pull secret
-          - bash: echo update azure kubernete cluster
-      - job: CopyArtifacts
-        displayName: Copy artifacts from default working directory
-        dependsOn: UpdateKuberneteCluster
-        steps:
-          - task: CopyFiles@2
-            inputs:
-              SourceFolder: '$(System.DefaultWorkingDirectory)'
-              Contents: '**'
-              TargetFolder: '$(Build.ArtifactStagingDirectory)'
-      - job: PublishArtifacts
-        displayName: Publish build artifacts to azure staging directory
-        dependsOn: CopyArtifacts
-        steps:
-        - task: PublishBuildArtifacts@1
-          inputs:
-            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-            ArtifactName: 'drop'
-            publishLocation: 'Container'
+    - job: Build
+      displayName: build
+      pool:
+       vmImage: "ubuntu-latest"
+      steps:
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: '$(System.DefaultWorkingDirectory)'
+          Contents: '**/*.yaml'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'manifests'
+          publishLocation: 'Container'
+        
   - stage: DevDeploy
     dependsOn: Build
     jobs:
