@@ -49,17 +49,4 @@ stages:
       - job: StagingJob1
         steps:
           - bash: echo Staging job1
-  - stage: ProdDeploy
-    dependsOn:
-     - DevDeploy
-     - QADeploy
-     - StagingDeploy
-    jobs:
-      - deployment: ProductionDeployment
-        environment: Prod
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - bash: Deploy on production environment
   
