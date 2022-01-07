@@ -1,0 +1,47 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    displayName: Build code
+    variables:
+      env: Build
+    jobs:
+      - job: PrintBuildInVariables
+        displayName: Print build in variables
+        steps:
+          - bash: echo Default Working Directory= $(System.DefaultWorkingDirectory)
+      - job: BuildAndDeployContainer
+        displayName: Build and deploy container
+        steps:
+          - bash: echo Build container
+          - bash: echo Deploy container to hub.docker.com
+      - job: UpdateKuberneteCluster
+        displayName: Update kubernete cluster
+        steps:
+          - bash: echo create image pull secret
+          - bash: echo update azure kubernete cluster
+      - job: CopyArtifacts
+        displayName: Copy artifacts from default working directory
+        steps:
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: '$(System.DefaultWorkingDirectory)'
+              Contents: '**'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      - job: PublishArtifacts
+        displayName: Publish build artifacts to azure staging directory
+        steps:
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'drop'
+            publishLocation: 'Container'
